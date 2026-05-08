@@ -3,3 +3,4 @@
 - [Phase 구현 브랜치 전략](feedback_branch_strategy.md) — Phase 0 완료 후 Phase 1 시작 전에 feature/phase{N} 브랜치 생성 필수
 - [Phase 구현 시 /tdd 스킬 사용 필수](feedback_tdd_skill.md) — 코드 작성 시 Agent 직접 호출 대신 /tdd 스킬 사용
 - [Plan.md 라이프사이클 관리](feedback_plan_md_lifecycle.md) — Phase 완료 후 feature 브랜치엔 유지, master 머지 후 삭제
+- [일관성 검증 범위 제한](feedback_consistency_check_scope.md) — doc-consistency-validator는 설계·요구사항 문서만 검증, 소스코드 파일 체크 불필요

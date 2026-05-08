@@ -3,3 +3,6 @@
 - [아키텍처 제약 및 금지 사항](project_architecture_constraints.md) — MVC 레이어 규칙, 금지 사항, 컨벤션 체크리스트
 - [Phase 3 정합성 검증 결과](project_phase3_resolved_conflicts.md) — Phase 3 구현 전 발견된 이슈와 해결 결정 (전체 자체 해결)
 - [Phase 4 정합성 검증 결과](project_phase4_resolved_conflicts.md) — Phase 4 구현 전 발견된 이슈와 해결 결정 (전체 자체 해결)
+- [Phase 5 정합성 검증 결과](project_phase5_resolved_conflicts.md) — Phase 5 구현 전 발견된 이슈와 해결 결정 (전체 자체 해결)
+- [Phase 6 정합성 검증 결과](project_phase6_resolved_conflicts.md) — Phase 6 구현 전 발견된 이슈와 해결 결정 (전체 자체 해결)
+- [검증 범위 피드백](feedback_validation_scope.md) — 기존 구현 파일 확인 금지, 설계 문서 간 교차 검증만 수행
