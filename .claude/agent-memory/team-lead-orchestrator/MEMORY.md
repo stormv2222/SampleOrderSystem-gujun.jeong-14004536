@@ -1,2 +1,5 @@
 - [오케스트레이터 역할 분담 원칙](feedback_implementation_delegation.md) — 문서검증·구현·테스트·요구사항검증 모두 전문 에이전트에 위임, orchestrator는 플래닝·RED·리뷰만
 - [Phase 시작 전 세부 설계 문서 존재 확인](feedback_phase_design_doc_check.md) — docs/design/phase{N}.md 없으면 구현 중단하고 사용자에게 작성 필요 알림
+- [Phase 구현 브랜치 전략](feedback_branch_strategy.md) — Phase 0 완료 후 Phase 1 시작 전에 feature/phase{N} 브랜치 생성 필수
+- [Phase 구현 시 /tdd 스킬 사용 필수](feedback_tdd_skill.md) — 코드 작성 시 Agent 직접 호출 대신 /tdd 스킬 사용
+- [Plan.md 라이프사이클 관리](feedback_plan_md_lifecycle.md) — Phase 완료 후 feature 브랜치엔 유지, master 머지 후 삭제

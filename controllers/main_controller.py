@@ -4,10 +4,16 @@ from views.main_view import MainView
 
 if TYPE_CHECKING:
     from controllers.sample_controller import SampleController
+    from controllers.order_controller import OrderController
 
 
 class MainController:
-    def __init__(self, view: MainView, sample_ctrl: SampleController | None = None) -> None:
+    def __init__(
+        self,
+        view: MainView,
+        sample_ctrl: SampleController | None = None,
+        order_ctrl: OrderController | None = None,
+    ) -> None:
         self._view = view
         self._menu: dict[str, tuple[str, Callable | None]] = {
             "1": ("시료 관리",      None),
@@ -20,6 +26,8 @@ class MainController:
         }
         if sample_ctrl is not None:
             self._menu["1"] = ("시료 관리", sample_ctrl.run)
+        if order_ctrl is not None:
+            self._menu["2"] = ("주문 접수", order_ctrl.run_reserve)
 
     def run(self) -> None:
         while True:
