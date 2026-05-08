@@ -112,6 +112,9 @@ class SampleView:
 
     def show_error(self, message: str) -> None:
         """오류 메시지 출력."""
+
+    def show_search_menu(self) -> None:
+        """검색 기준 속성 선택 메뉴 출력."""
 ```
 
 **서브 메뉴 출력 형식**:
@@ -121,6 +124,16 @@ class SampleView:
   2. 시료 조회
   3. 시료 검색
   0. 뒤로
+선택 >
+```
+
+**검색 기준 메뉴 출력 형식**:
+```
+검색 기준:
+  1. ID
+  2. 이름
+  3. 평균 생산시간
+  4. 수율
 선택 >
 ```
 
@@ -151,7 +164,7 @@ class SampleController:
         """repo.read_all() → view.show_sample_list()."""
 
     def _search(self) -> None:
-        """검색어 입력 → repo.search("name", keyword) → view.show_sample_list()."""
+        """검색 기준 속성 선택 → 검색어 입력 → repo.search(key, value) → view.show_sample_list()."""
 ```
 
 **`run()` 흐름**:
@@ -173,6 +186,21 @@ avg_time = view.get_input("평균 생산 시간(분): ")
 yield_r  = view.get_input("수율(0.0~1.0): ")
 record   = repo.create({"name": name, "avg_production_time": avg_time, "yield_rate": yield_r})
 view.show_message(f"시료가 등록되었습니다. (ID: {record['id']})")
+```
+
+**`_search()` 흐름**:
+```
+SEARCH_KEYS = {"1": "id", "2": "name", "3": "avg_production_time", "4": "yield_rate"}
+
+view.show_search_menu()
+key_choice = view.get_input("선택 > ")
+if key_choice not in SEARCH_KEYS:
+    view.show_error("올바른 번호를 입력하세요.")
+    return
+key     = SEARCH_KEYS[key_choice]
+keyword = view.get_input("검색어: ")
+results = repo.search(key, keyword)
+view.show_sample_list(results)
 ```
 
 ---
@@ -231,8 +259,11 @@ def test_register_creates_record():
 def test_list_calls_show_sample_list():
     """_list() 호출 시 view.show_sample_list가 호출된다."""
 
-def test_search_returns_filtered_results():
-    """검색어 입력 → 해당 이름 포함 시료만 출력."""
+def test_search_by_attribute_returns_filtered_results():
+    """검색 기준 속성 선택(예: "2"=이름) + 검색어 입력 → 해당 속성 포함 시료만 출력."""
+
+def test_search_with_invalid_attribute_shows_error():
+    """잘못된 속성 번호 입력 → show_error() 호출."""
 ```
 
 ---
@@ -257,7 +288,9 @@ self._menu["1"] = ("시료 관리", sample_ctrl.run)
 - [ ] `시료 관리` 메뉴 진입 → 서브 메뉴 출력
 - [ ] 시료 등록 후 `data/sample.json` 생성 및 내용 확인
 - [ ] 프로그램 재시작 후 등록된 시료 목록 유지
-- [ ] 시료 검색으로 이름 일부 검색 동작 확인
+- [ ] 시료 검색 시 기준 속성(ID·이름·평균 생산시간·수율) 선택 메뉴 출력
+- [ ] 선택한 속성으로 검색어 부분 일치 검색 동작 확인
+- [ ] 잘못된 속성 번호 입력 시 오류 메시지 출력
 - [ ] `pytest tests/test_model_sample.py` 전체 통과
 - [ ] `pytest tests/test_view_sample.py` 전체 통과
 - [ ] `pytest tests/test_controller_sample.py` 전체 통과

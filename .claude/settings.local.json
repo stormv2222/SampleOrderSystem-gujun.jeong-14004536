@@ -23,7 +23,16 @@
       "Bash(python -m pytest tests/test_main_controller.py::TestMainController -v --collect-only)",
       "Bash(python -c ' *)",
       "Bash(git checkout *)",
-      "Bash(git merge feature/phase1 --no-ff -m ' *)"
+      "Bash(git merge feature/phase1 --no-ff -m ' *)",
+      "Bash(python -c \"from json_lib import load, dump; print\\('json_lib OK'\\)\")",
+      "Bash(python -m pytest tests/test_model_sample.py -v)",
+      "Bash(python -m pytest tests/ -v)",
+      "Bash(python -m pytest tests/test_view_sample.py -v)",
+      "Bash(python -m pytest tests/test_view_sample.py tests/test_model_sample.py tests/test_main_controller.py -v)",
+      "Bash(python -m pytest tests/test_controller_sample.py -v)",
+      "Bash(python -m pytest tests/test_main_controller.py::TestMainController::test_sample_ctrl_is_called_on_menu_1 -v)",
+      "Bash(python -m pytest tests/test_model_sample.py tests/test_view_sample.py tests/test_controller_sample.py -v)",
+      "Bash(python -m pytest -v)"
     ]
   },
   "enableAllProjectMcpServers": true,
