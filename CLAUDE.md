@@ -14,6 +14,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - 각 문서에는 생성 파일 목록, 클래스 시그니처, 테스트 케이스 설계, 완료 기준 체크리스트가 포함된다.
   - 구현 시작 전 반드시 해당 phase의 설계 문서를 확인한다.
 
+## 브랜치 전략
+
+- Phase 구현은 **`feature/phase{N}`** 브랜치에서 진행한다 (예: `feature/phase1`).
+- Phase 내 중간 review 단계마다 해당 feature 브랜치에 커밋한다.
+- Phase가 완료되면 `master` 브랜치로 머지한 뒤 다음 Phase 브랜치를 생성한다.
+
+```bash
+# Phase 시작 시 (master 기준으로 브랜치 생성)
+git checkout master
+git checkout -b feature/phase1
+
+# Phase 완료 후 머지
+git checkout master
+git merge feature/phase1
+git push origin master
+```
+
 ## 개발 명령어
 
 ```bash
