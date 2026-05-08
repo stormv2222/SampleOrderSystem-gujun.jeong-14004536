@@ -134,3 +134,28 @@ class TestMainController:
         ctrl = MainController(view, monitoring_ctrl=FakeMonitoringCtrl())
         ctrl.run()
         assert called, "monitoring_ctrl.run()이 호출되지 않음"
+
+    # 사이클 8 — dummy_ctrl 주입 시 "7" 입력이 dummy_ctrl.run() 호출
+    def test_dummy_ctrl_run_is_called_on_menu_7(self):
+        view = MainView()
+        _set_inputs(view, "7", "0")
+        called = []
+
+        class FakeDummyCtrl:
+            def run(self):
+                called.append(True)
+
+        ctrl = MainController(view, dummy_ctrl=FakeDummyCtrl())
+        ctrl.run()
+        assert called, "dummy_ctrl.run()이 호출되지 않음"
+
+    # 사이클 8 — 메뉴 출력에 "더미 데이터 생성" 포함
+    def test_show_menu_contains_dummy_data_label(self):
+        view = MainView()
+        _set_inputs(view, "0")
+        with patch("sys.stdout", new_callable=io.StringIO) as mock_out:
+            class FakeDummyCtrl:
+                def run(self): pass
+            MainController(view, dummy_ctrl=FakeDummyCtrl()).run()
+            output = mock_out.getvalue()
+        assert "더미 데이터 생성" in output, "'더미 데이터 생성'이 메뉴 출력에 없음"

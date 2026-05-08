@@ -13,6 +13,7 @@ from controllers.order_controller import OrderController
 from controllers.production_controller import ProductionController
 from controllers.release_controller import ReleaseController
 from controllers.monitoring_controller import MonitoringController
+from controllers.dummy_controller import DummyController
 from models.production_queue import ProductionQueue
 from app.watcher import FileWatcher
 
@@ -37,6 +38,10 @@ if __name__ == "__main__":
         order_repo, inventory_repo, sample_repo, monitoring_view,
         watchers=[order_watcher, inventory_watcher],
     )
+    dummy_ctrl = DummyController(
+        repos={"sample": sample_repo, "order": order_repo, "inventory": inventory_repo},
+        view=main_view,
+    )
     ctrl = MainController(
         main_view,
         sample_ctrl=sample_ctrl,
@@ -44,5 +49,6 @@ if __name__ == "__main__":
         production_ctrl=production_ctrl,
         release_ctrl=release_ctrl,
         monitoring_ctrl=monitoring_ctrl,
+        dummy_ctrl=dummy_ctrl,
     )
     ctrl.run()
