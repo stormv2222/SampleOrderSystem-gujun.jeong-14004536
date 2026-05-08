@@ -59,6 +59,9 @@ class OrderController:
         """재고 확인 → 충분: CONFIRMED / 부족: PRODUCING + 생산 큐 등록."""
         from models.production_queue import ProductionTask
         sample = self._sample_repo.read_one(int(order["sample_id"]))
+        if sample is None:
+            self._view.show_error(f"시료 ID {order['sample_id']}를 찾을 수 없습니다.")
+            return
         yield_rate = float(sample["yield_rate"])
         avg_time = int(sample["avg_production_time"])
         quantity = int(order["quantity"])

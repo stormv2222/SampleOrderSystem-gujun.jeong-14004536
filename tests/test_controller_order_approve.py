@@ -129,3 +129,19 @@ class TestOrderControllerApprove(unittest.TestCase):
         view.show_error = lambda msg: errors.append(msg)
         ctrl.run_approve()
         self.assertTrue(errors, "show_error()가 호출되지 않음")
+
+    # 버그 수정 — 존재하지 않는 sample_id를 가진 주문 승인 시 오류 메시지 출력 (crash 없음)
+    def test_approve_order_with_nonexistent_sample_shows_error(self):
+        """주문의 sample_id에 해당하는 시료가 없을 때 TypeError 대신 오류 메시지를 출력한다."""
+        ctrl, sample_repo, order_repo, _, _, view = _make_ctrl(["1", "1"])
+        # 시료를 등록하지 않고 sample_id=99 주문만 생성
+        order_repo.create({"sample_id": "99", "customer": "연구소", "quantity": "10"})
+        # 직접 RESERVED 상태로 수동 등록 (status 기본값이 RESERVED이므로 그대로)
+        errors = []
+        view.show_error = lambda msg: errors.append(msg)
+        view.show_order_list = lambda orders, title="": None
+        view.show_approve_menu = lambda: None
+        # _approve 직접 호출 — sample이 None일 때 crash 없이 show_error가 호출돼야 함
+        order = order_repo.read_one(1)
+        ctrl._approve(order)
+        self.assertTrue(errors, "sample 없을 때 show_error()가 호출되지 않음")
