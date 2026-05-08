@@ -61,7 +61,7 @@ class TestInventoryRepository(unittest.TestCase):
         self.assertEqual(result["quantity"], "25")
         self.assertEqual(result["sample_id"], "5")
 
-    # 추가: subtract_quantity 레코드 없으면 None 반환
-    def test_subtract_quantity_nonexistent_sample_returns_none(self):
-        result = self.repo.subtract_quantity(9999, 10)
-        self.assertIsNone(result)
+    # 추가: subtract_quantity 레코드 없으면 ValueError 발생
+    def test_subtract_quantity_nonexistent_sample_raises_value_error(self):
+        with self.assertRaises(ValueError):
+            self.repo.subtract_quantity(9999, 10)
