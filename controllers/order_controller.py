@@ -87,3 +87,8 @@ class OrderController:
                 self._view.show_approve_result(int(order["id"]), "PRODUCING")
             else:
                 self._view.show_message("승인이 취소되었습니다.")
+
+    def _reject(self, order: dict) -> None:
+        """주문 상태를 REJECTED로 변경."""
+        self._order_repo.update(int(order["id"]), {"status": "REJECTED"})
+        self._view.show_reject_result(int(order["id"]))

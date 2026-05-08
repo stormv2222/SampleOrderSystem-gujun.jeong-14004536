@@ -100,3 +100,13 @@ class TestOrderControllerApprove(unittest.TestCase):
         self.assertEqual(updated["status"], "RESERVED")
         # 생산 큐 비어 있음
         self.assertTrue(production_queue.is_empty())
+
+    # 사이클 7 — _reject → 주문 상태 REJECTED
+    def test_reject_sets_rejected(self):
+        ctrl, sample_repo, order_repo, _, _, view = _make_ctrl([])
+        sample_repo.create({"name": "A형", "avg_production_time": "30", "yield_rate": "0.9"})
+        order = order_repo.create({"sample_id": "1", "customer": "서울대", "quantity": "50"})
+        view.show_reject_result = lambda order_id: None
+        ctrl._reject(order)
+        updated = order_repo.read_one(int(order["id"]))
+        self.assertEqual(updated["status"], "REJECTED")
