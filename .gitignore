@@ -1,0 +1,26 @@
+# IDE
+.idea/
+
+# MCP 설정 (토큰 포함 — 절대 커밋 금지)
+.mcp.json
+
+# Claude 로컬 설정
+.claude/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+
+# 테스트 캐시
+.pytest_cache/
+.coverage
+htmlcov/
+
+# 데이터 파일 (런타임 생성)
+data/
