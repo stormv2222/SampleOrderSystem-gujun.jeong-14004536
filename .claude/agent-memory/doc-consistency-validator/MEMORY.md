@@ -1,0 +1,3 @@
+- [도메인 정의 및 확정 필드명](project_domain_definitions.md) — Sample 필드명, JSON 저장 형식, 상태 전이, 계산 공식 확정본
+- [Phase 2 정합성 검증 결과](project_phase2_resolved_conflicts.md) — Phase 2 구현 전 발견된 이슈와 해결 결정 (C-01 사용자 확인 대기)
+- [아키텍처 제약 및 금지 사항](project_architecture_constraints.md) — MVC 레이어 규칙, 금지 사항, 컨벤션 체크리스트

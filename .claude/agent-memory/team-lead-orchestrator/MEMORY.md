@@ -1,1 +1,2 @@
 - [오케스트레이터 역할 분담 원칙](feedback_implementation_delegation.md) — 문서검증·구현·테스트·요구사항검증 모두 전문 에이전트에 위임, orchestrator는 플래닝·RED·리뷰만
+- [Phase 시작 전 세부 설계 문서 존재 확인](feedback_phase_design_doc_check.md) — docs/design/phase{N}.md 없으면 구현 중단하고 사용자에게 작성 필요 알림

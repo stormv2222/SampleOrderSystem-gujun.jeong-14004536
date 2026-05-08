@@ -19,6 +19,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Phase 구현은 **`feature/phase{N}`** 브랜치에서 진행한다 (예: `feature/phase1`).
 - Phase 내 중간 review 단계마다 해당 feature 브랜치에 커밋한다.
 - Phase가 완료되면 `master` 브랜치로 머지한 뒤 다음 Phase 브랜치를 생성한다.
+- **머지 후 feature 브랜치는 삭제하지 않는다.** 이력 추적 목적으로 유지한다.
 
 ```bash
 # Phase 시작 시 (master 기준으로 브랜치 생성)

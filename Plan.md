@@ -1,59 +1,136 @@
-# Phase 1 TDD Plan — 프로젝트 골격 + 메인 메뉴
+# Phase 2 TDD Plan — 시료 관리
 
-## 사이클 1 — `0` 입력 시 루프 종료
+## 전제 조건 (구현 전 완료 필요)
 
-### 검증할 동작
-`MainController.run()`에 `"0"`을 입력하면 루프가 정상 종료된다.
-
-### 테스트 시나리오
-- Given: `MainView`의 `get_input`이 `"0"`을 반환하도록 주입
-- When: `MainController(view).run()` 호출
-- Then: `StopIteration` 없이 함수가 정상 반환된다
-
-### 예상 실패 이유
-`MainController`, `MainView` 클래스가 아직 존재하지 않으므로 `ImportError` 또는 `ModuleNotFoundError` 발생
+- `json_lib/` 패키지를 DataPersistence 참조 레포에서 복사
+  - 출처: https://github.com/stormv2222/DataPersistence-gujun.jeong-14004536
+  - 대상: `semicon/json_lib/`
+  - 수정 금지
 
 ---
 
-## 사이클 2 — 유효하지 않은 입력 시 오류 메시지 출력
+## 사이클 1 — SampleRepository: create + read_all
 
 ### 검증할 동작
-메뉴에 없는 번호(`"9"`)를 입력하면 `show_invalid()`가 호출된다.
+시료를 생성하면 id가 자동 부여되고 모든 값이 str로 저장되며, read_all로 전체 목록을 조회할 수 있다.
 
-### 테스트 시나리오
-- Given: `get_input`이 `"9"` → `"0"` 순서로 반환
-- When: `MainController(view).run()` 호출
-- Then: `show_invalid()`가 최소 1회 호출되었다
+### 테스트 시나리오 (TC-1, TC-2)
+- Given: 임시 파일 경로로 SampleRepository 생성 (파일 없음)
+- When: `create({"name": "A형", "avg_production_time": "30", "yield_rate": "0.9"})` 호출
+- Then: 반환 레코드에 `"id"` 키 존재, 모든 value가 str
+- When: 한 번 더 `create(...)` 호출 후 `read_all()`
+- Then: 2건 반환
 
 ### 예상 실패 이유
-사이클 1 구현 후 `show_invalid` 분기가 없으면 호출되지 않음 → assertion 실패
+`models/sample.py` 미존재 → ImportError
 
 ---
 
-## 사이클 3 — 유효한 메뉴 항목 선택 시 "준비 중" 메시지 출력
+## 사이클 2 — SampleRepository: read_one
 
 ### 검증할 동작
-`"1"`~`"6"` 중 하나를 입력하면 `show_not_implemented()`가 호출된다.
+존재하는 id로 read_one 시 레코드를 반환하고, 없는 id는 None을 반환한다.
 
-### 테스트 시나리오
-- Given: `get_input`이 `"1"` → `"0"` 순서로 반환
-- When: `MainController(view).run()` 호출
-- Then: `show_not_implemented()`가 최소 1회 호출되었다
+### 테스트 시나리오 (TC-3, TC-4)
+- Given: create로 레코드 1건 저장
+- When: `read_one(1)` (존재하는 id)
+- Then: 레코드 dict 반환
+- When: `read_one(9999)` (없는 id)
+- Then: `None` 반환
 
 ### 예상 실패 이유
-`show_not_implemented` 분기가 없으면 호출되지 않음 → assertion 실패
+read_one 미구현 → AttributeError 또는 반환값 불일치
 
 ---
 
-## 사이클 4 — `show_menu` 출력에 모든 메뉴 항목 포함
+## 사이클 3 — SampleRepository: update + delete
 
 ### 검증할 동작
-`run()` 실행 시 stdout에 7개 메뉴 레이블이 모두 출력된다.
+update로 특정 필드를 수정할 수 있고, delete 후 read_one은 None을 반환한다.
 
-### 테스트 시나리오
-- Given: `get_input`이 `"0"` 반환, `sys.stdout`을 `io.StringIO`로 교체
-- When: `MainController(view).run()` 호출
-- Then: stdout 캡처 문자열에 `"시료 관리"`, `"주문 접수"`, `"주문 승인/거절"`, `"모니터링"`, `"출고 처리"`, `"생산 라인"`, `"종료"` 7개 레이블이 모두 포함된다
+### 테스트 시나리오 (TC-5, TC-6, TC-7)
+- Given: create로 레코드 1건 저장
+- When: `update(id, {"name": "수정됨"})` → `read_one(id)`
+- Then: name 필드가 "수정됨"
+- When: `delete(id)` → `read_one(id)`
+- Then: 반환값 True, read_one → None
+- When: `delete(9999)`
+- Then: False 반환
 
 ### 예상 실패 이유
-`show_menu`가 아직 실제 출력을 하지 않거나, 레이블 중 하나라도 빠지면 assertion 실패
+update/delete 미구현 → AttributeError
+
+---
+
+## 사이클 4 — SampleRepository: search + 파일 없음 + 영속성
+
+### 검증할 동작
+name 필드로 부분 검색이 가능하고, 파일이 없어도 예외 없이 동작하며, 새 인스턴스로 재로드해도 데이터가 유지된다.
+
+### 테스트 시나리오 (TC-8, TC-9, TC-10)
+- Given: "A형 시료", "B형 시료" 2건 저장
+- When: `search("name", "A형")`
+- Then: 1건만 반환
+- Given: 파일 없는 경로로 SampleRepository 생성
+- When: `read_all()`
+- Then: 빈 리스트 반환, 예외 없음
+- Given: create로 레코드 저장 후 같은 경로로 새 SampleRepository 인스턴스 생성
+- When: `read_all()`
+- Then: 동일 레코드 반환
+
+### 예상 실패 이유
+search 미구현 또는 파일 없음 처리 누락
+
+---
+
+## 사이클 5 — SampleView: 목록 출력 형식 + 빈 목록
+
+### 검증할 동작
+시료 목록 출력 시 지정 형식(ID, 이름, 생산시간, 수율)이 포함되고, 빈 목록이면 "등록된 시료 없음"을 출력한다.
+
+### 테스트 시나리오
+- Given: records = [{"id":"1","name":"A형 시료","avg_production_time":"30","yield_rate":"0.9"}]
+- When: `view.show_sample_list(records)`, sys.stdout 캡처
+- Then: "ID: 1", "A형 시료", "30분", "0.9" 포함
+- Given: records = []
+- When: `view.show_sample_list([])`
+- Then: "등록된 시료 없음" 포함
+
+### 예상 실패 이유
+views/sample_view.py 미존재 → ImportError
+
+---
+
+## 사이클 6 — SampleController: register + list + search 흐름
+
+### 검증할 동작
+등록 흐름에서 입력값이 repo에 저장되고, list 흐름에서 show_sample_list가 호출되며, search 흐름에서 필터된 결과가 출력된다.
+
+### 테스트 시나리오
+- Given: view.get_input이 "A형", "30", "0.9" 순으로 반환
+- When: `ctrl._register()`
+- Then: repo.read_all() 결과 1건
+- Given: repo에 레코드 존재
+- When: `ctrl._list()`
+- Then: show_sample_list 호출됨 (lambda 교체로 확인)
+- Given: view.get_input이 "A형" 반환, repo에 "A형 시료" 존재
+- When: `ctrl._search()`
+- Then: show_sample_list에 전달된 목록에 해당 시료 포함
+
+### 예상 실패 이유
+controllers/sample_controller.py 미존재 → ImportError
+
+---
+
+## 사이클 7 — MainController: sample_ctrl 연동
+
+### 검증할 동작
+MainController에 sample_ctrl 주입 시 "1" 입력이 sample_ctrl.run()을 호출한다.
+
+### 테스트 시나리오
+- Given: called = [] 리스트, sample_ctrl.run = lambda: called.append(True)
+- When: MainController(view, sample_ctrl=sample_ctrl).run(), "1" → "0" 입력
+- Then: called 리스트에 True가 추가됨
+
+### 예상 실패 이유
+MainController.__init__이 sample_ctrl 파라미터를 받지 않음 → TypeError

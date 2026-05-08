@@ -48,3 +48,17 @@ class TestMainController:
         for label in ["시료 관리", "주문 접수", "주문 승인/거절",
                       "모니터링", "출고 처리", "생산 라인", "종료"]:
             assert label in output, f"'{label}'이 메뉴 출력에 없음"
+
+    # 사이클 7 — sample_ctrl 주입 시 "1" 입력이 sample_ctrl.run() 호출
+    def test_sample_ctrl_is_called_on_menu_1(self):
+        view = MainView()
+        _set_inputs(view, "1", "0")
+        called = []
+
+        class FakeSampleCtrl:
+            def run(self):
+                called.append(True)
+
+        ctrl = MainController(view, sample_ctrl=FakeSampleCtrl())
+        ctrl.run()
+        assert called, "sample_ctrl.run()이 호출되지 않음"

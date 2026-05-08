@@ -1,9 +1,13 @@
-from typing import Callable
+from __future__ import annotations
+from typing import TYPE_CHECKING, Callable
 from views.main_view import MainView
+
+if TYPE_CHECKING:
+    from controllers.sample_controller import SampleController
 
 
 class MainController:
-    def __init__(self, view: MainView) -> None:
+    def __init__(self, view: MainView, sample_ctrl: SampleController | None = None) -> None:
         self._view = view
         self._menu: dict[str, tuple[str, Callable | None]] = {
             "1": ("시료 관리",      None),
@@ -14,6 +18,8 @@ class MainController:
             "6": ("생산 라인",      None),
             "0": ("종료",           None),
         }
+        if sample_ctrl is not None:
+            self._menu["1"] = ("시료 관리", sample_ctrl.run)
 
     def run(self) -> None:
         while True:
