@@ -22,3 +22,12 @@ class ProductionQueue:
 
     def size(self) -> int:
         return len(self._queue)
+
+    def peek(self) -> ProductionTask | None:
+        return self._queue[0] if self._queue else None
+
+    def dequeue(self) -> ProductionTask | None:
+        return self._queue.popleft() if self._queue else None
+
+    def list_all(self) -> list[ProductionTask]:
+        return list(self._queue)

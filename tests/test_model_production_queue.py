@@ -18,3 +18,36 @@ class TestProductionQueue(unittest.TestCase):
         self.q.enqueue(self.task1)
         self.assertEqual(self.q.size(), 1)
         self.assertFalse(self.q.is_empty())
+
+    # TC-5: 빈 큐 peek() → None
+    def test_peek_empty_queue_returns_none(self):
+        self.assertIsNone(self.q.peek())
+
+    # TC-2: peek() → 첫 작업 반환, 큐에서 제거하지 않음
+    def test_peek_returns_first_without_removing(self):
+        self.q.enqueue(self.task1)
+        self.q.enqueue(self.task2)
+        result = self.q.peek()
+        self.assertEqual(result, self.task1)
+        self.assertEqual(self.q.size(), 2)  # 제거 없음
+
+    # TC-4: 빈 큐 dequeue() → None
+    def test_dequeue_empty_queue_returns_none(self):
+        self.assertIsNone(self.q.dequeue())
+
+    # TC-3: dequeue() → FIFO 순서
+    def test_dequeue_follows_fifo_order(self):
+        self.q.enqueue(self.task1)
+        self.q.enqueue(self.task2)
+        first = self.q.dequeue()
+        second = self.q.dequeue()
+        self.assertEqual(first, self.task1)
+        self.assertEqual(second, self.task2)
+        self.assertTrue(self.q.is_empty())
+
+    # TC-6: list_all() → 삽입 순서와 동일한 목록
+    def test_list_all_returns_fifo_order(self):
+        self.q.enqueue(self.task1)
+        self.q.enqueue(self.task2)
+        result = self.q.list_all()
+        self.assertEqual(result, [self.task1, self.task2])
