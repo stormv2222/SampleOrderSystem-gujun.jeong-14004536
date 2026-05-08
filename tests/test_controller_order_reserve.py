@@ -39,3 +39,13 @@ class TestOrderControllerReserve(unittest.TestCase):
         self.assertEqual(len(orders), 1)
         self.assertEqual(orders[0]["status"], "RESERVED")
         self.assertEqual(orders[0]["customer"], "서울대 연구소")
+
+    # 사이클 5 — 존재하지 않는 시료 ID → show_error 호출, 주문 미생성
+    def test_reserve_invalid_sample_id(self):
+        ctrl, sample_repo, order_repo, _, view = _make_ctrl(["999"])
+        # sample_repo is empty — no samples exist
+        errors = []
+        view.show_error = lambda msg: errors.append(msg)
+        ctrl.run_reserve()
+        self.assertTrue(errors, "show_error()가 호출되지 않음")
+        self.assertEqual(order_repo.read_all(), [])
