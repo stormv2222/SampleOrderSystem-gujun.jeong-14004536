@@ -51,3 +51,19 @@ class TestProductionQueue(unittest.TestCase):
         self.q.enqueue(self.task2)
         result = self.q.list_all()
         self.assertEqual(result, [self.task1, self.task2])
+
+    # TC-8: remove_by_order_id → 해당 작업 제거, True 반환
+    def test_remove_by_order_id_removes_correct_task(self):
+        self.q.enqueue(self.task1)
+        self.q.enqueue(self.task2)
+        result = self.q.remove_by_order_id(1)
+        self.assertTrue(result)
+        self.assertEqual(self.q.size(), 1)
+        self.assertEqual(self.q.peek().order_id, 2)
+
+    # TC-9: remove_by_order_id 없는 ID → False 반환, 큐 변화 없음
+    def test_remove_by_order_id_nonexistent_returns_false(self):
+        self.q.enqueue(self.task1)
+        result = self.q.remove_by_order_id(99)
+        self.assertFalse(result)
+        self.assertEqual(self.q.size(), 1)
