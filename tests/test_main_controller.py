@@ -92,3 +92,31 @@ class TestMainController:
         ctrl = MainController(view, order_ctrl=FakeOrderCtrl())
         ctrl.run()
         assert called, "order_ctrl.run_approve()가 호출되지 않음"
+
+    # 사이클 12 — production_ctrl 주입 시 "6" 입력이 production_ctrl.run() 호출
+    def test_production_ctrl_run_is_called_on_menu_6(self):
+        view = MainView()
+        _set_inputs(view, "6", "0")
+        called = []
+
+        class FakeProductionCtrl:
+            def run(self):
+                called.append(True)
+
+        ctrl = MainController(view, production_ctrl=FakeProductionCtrl())
+        ctrl.run()
+        assert called, "production_ctrl.run()이 호출되지 않음"
+
+    # 사이클 13 — release_ctrl 주입 시 "5" 입력이 release_ctrl.run() 호출
+    def test_release_ctrl_run_is_called_on_menu_5(self):
+        view = MainView()
+        _set_inputs(view, "5", "0")
+        called = []
+
+        class FakeReleaseCtrl:
+            def run(self):
+                called.append(True)
+
+        ctrl = MainController(view, release_ctrl=FakeReleaseCtrl())
+        ctrl.run()
+        assert called, "release_ctrl.run()이 호출되지 않음"

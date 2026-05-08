@@ -31,3 +31,8 @@ class ProductionQueue:
 
     def list_all(self) -> list[ProductionTask]:
         return list(self._queue)
+
+    def remove_by_order_id(self, order_id: int) -> bool:
+        original_len = len(self._queue)
+        self._queue = deque(t for t in self._queue if t.order_id != order_id)
+        return len(self._queue) < original_len
