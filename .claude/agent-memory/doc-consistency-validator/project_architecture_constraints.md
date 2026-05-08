@@ -40,14 +40,21 @@ Phase별로 __init__에 Optional 파라미터 추가:
 def __init__(
     self,
     view: MainView,
-    sample_ctrl: SampleController | None = None,   # Phase 2
-    order_ctrl: OrderController | None = None,     # Phase 3~4
+    sample_ctrl: SampleController | None = None,   # Phase 2 (구현 완료)
+    order_ctrl: OrderController | None = None,     # Phase 3 (구현 예정)
     monitoring_ctrl: MonitoringController | None = None,  # Phase 6
     production_ctrl: ProductionController | None = None,  # Phase 5
     release_ctrl: ReleaseController | None = None,        # Phase 5
 ) -> None: ...
 ```
 None인 항목은 show_not_implemented()로 처리.
+
+순환 import 방지: TYPE_CHECKING 블록 사용 패턴 (main_controller.py 기존 구현 참조).
+
+## Phase별 확장 이력
+
+- Phase 2: sample_ctrl 파라미터 추가, self._menu["1"] 교체 — 구현 완료
+- Phase 3: order_ctrl 파라미터 추가, self._menu["2"] 교체 — 검증 완료, 구현 예정
 
 ## 테스트 격리
 

@@ -1,0 +1,2 @@
+- [Repository pattern for models](project_repository_pattern.md) — stateless JSON-backed repo, all values as str, json_lib only
+- [Test conventions for repository tests](project_test_conventions.md) — unittest.TestCase + tempfile isolation pattern

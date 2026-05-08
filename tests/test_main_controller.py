@@ -76,3 +76,19 @@ class TestMainController:
         ctrl = MainController(view, order_ctrl=FakeOrderCtrl())
         ctrl.run()
         assert called, "order_ctrl.run_reserve()가 호출되지 않음"
+
+    # 사이클 9 — order_ctrl 주입 시 "3" 입력이 order_ctrl.run_approve() 호출
+    def test_order_ctrl_run_approve_is_called_on_menu_3(self):
+        view = MainView()
+        _set_inputs(view, "3", "0")
+        called = []
+
+        class FakeOrderCtrl:
+            def run_reserve(self):
+                pass
+            def run_approve(self):
+                called.append(True)
+
+        ctrl = MainController(view, order_ctrl=FakeOrderCtrl())
+        ctrl.run()
+        assert called, "order_ctrl.run_approve()가 호출되지 않음"

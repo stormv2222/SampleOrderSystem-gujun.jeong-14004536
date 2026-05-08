@@ -28,6 +28,8 @@ class MainController:
             self._menu["1"] = ("시료 관리", sample_ctrl.run)
         if order_ctrl is not None:
             self._menu["2"] = ("주문 접수", order_ctrl.run_reserve)
+            if hasattr(order_ctrl, "run_approve"):
+                self._menu["3"] = ("주문 승인/거절", order_ctrl.run_approve)
 
     def run(self) -> None:
         while True:
