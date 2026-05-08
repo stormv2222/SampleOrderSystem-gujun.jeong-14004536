@@ -97,12 +97,12 @@
 
 ## 진행 상황
 
-- [ ] 사이클 1: FieldDef + DEFAULT_SCHEMAS
-- [ ] 사이클 2: generate_one() 키 반환
-- [ ] 사이클 3: 모든 값 str
-- [ ] 사이클 4: int 범위 검증
-- [ ] 사이클 5: name 비어 있지 않음
-- [ ] 사이클 6: generate_batch
-- [ ] 사이클 7: DummyController
-- [ ] 사이클 8: MainController 메뉴 "7"
-- [ ] 사이클 9: 통합 테스트
+- [x] 사이클 1: FieldDef + DEFAULT_SCHEMAS
+- [x] 사이클 2: generate_one() 키 반환
+- [x] 사이클 3: 모든 값 str
+- [x] 사이클 4: int 범위 검증
+- [x] 사이클 5: name 비어 있지 않음
+- [x] 사이클 6: generate_batch
+- [x] 사이클 7: DummyController
+- [x] 사이클 8: MainController 메뉴 "7"
+- [x] 사이클 9: 통합 테스트
