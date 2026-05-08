@@ -7,6 +7,7 @@ from models.inventory import InventoryRepository
 from controllers.main_controller import MainController
 from controllers.sample_controller import SampleController
 from controllers.order_controller import OrderController
+from models.production_queue import ProductionQueue
 
 if __name__ == "__main__":
     main_view      = MainView()
@@ -15,7 +16,8 @@ if __name__ == "__main__":
     sample_ctrl    = SampleController(sample_repo, sample_view)
     order_repo     = OrderRepository("data/order.json")
     inventory_repo = InventoryRepository("data/inventory.json")
+    production_queue = ProductionQueue()
     order_view     = OrderView()
-    order_ctrl     = OrderController(order_repo, sample_repo, inventory_repo, order_view)
+    order_ctrl     = OrderController(order_repo, sample_repo, inventory_repo, production_queue, order_view)
     ctrl = MainController(main_view, sample_ctrl=sample_ctrl, order_ctrl=order_ctrl)
     ctrl.run()

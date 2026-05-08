@@ -5,6 +5,7 @@ import unittest
 from models.sample import SampleRepository
 from models.order import OrderRepository
 from models.inventory import InventoryRepository
+from models.production_queue import ProductionQueue
 from views.order_view import OrderView
 from controllers.order_controller import OrderController
 
@@ -21,10 +22,11 @@ def _make_ctrl(inputs: list[str]) -> tuple[OrderController, SampleRepository, Or
     sample_repo = SampleRepository(tmp_path("sample"))
     order_repo = OrderRepository(tmp_path("order"))
     inventory_repo = InventoryRepository(tmp_path("inventory"))
+    production_queue = ProductionQueue()
     view = OrderView()
     it = iter(inputs)
     view.get_input = lambda prompt="": next(it)
-    ctrl = OrderController(order_repo, sample_repo, inventory_repo, view)
+    ctrl = OrderController(order_repo, sample_repo, inventory_repo, production_queue, view)
     return ctrl, sample_repo, order_repo, inventory_repo, view
 
 
