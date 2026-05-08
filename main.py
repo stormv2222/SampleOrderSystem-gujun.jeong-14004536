@@ -3,6 +3,7 @@ from views.sample_view import SampleView
 from views.order_view import OrderView
 from views.production_view import ProductionView
 from views.release_view import ReleaseView
+from views.monitoring_view import MonitoringView
 from models.sample import SampleRepository
 from models.order import OrderRepository
 from models.inventory import InventoryRepository
@@ -11,7 +12,9 @@ from controllers.sample_controller import SampleController
 from controllers.order_controller import OrderController
 from controllers.production_controller import ProductionController
 from controllers.release_controller import ReleaseController
+from controllers.monitoring_controller import MonitoringController
 from models.production_queue import ProductionQueue
+from app.watcher import FileWatcher
 
 if __name__ == "__main__":
     main_view        = MainView()
@@ -27,11 +30,19 @@ if __name__ == "__main__":
     release_view     = ReleaseView()
     production_ctrl  = ProductionController(order_repo, inventory_repo, production_queue, production_view)
     release_ctrl     = ReleaseController(order_repo, inventory_repo, release_view)
+    monitoring_view   = MonitoringView()
+    order_watcher     = FileWatcher("data/order.json",     callback=lambda: None)
+    inventory_watcher = FileWatcher("data/inventory.json", callback=lambda: None)
+    monitoring_ctrl   = MonitoringController(
+        order_repo, inventory_repo, sample_repo, monitoring_view,
+        watchers=[order_watcher, inventory_watcher],
+    )
     ctrl = MainController(
         main_view,
         sample_ctrl=sample_ctrl,
         order_ctrl=order_ctrl,
         production_ctrl=production_ctrl,
         release_ctrl=release_ctrl,
+        monitoring_ctrl=monitoring_ctrl,
     )
     ctrl.run()
