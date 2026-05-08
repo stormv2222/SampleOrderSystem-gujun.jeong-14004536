@@ -7,6 +7,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 반도체 시료 생산 주문 관리 콘솔 애플리케이션 (Python 3.14).  
 요구사항 및 아키텍처 전문은 `docs/SPEC.md`를 참고한다.
 
+## 설계 문서
+
+- 전체 구현 계획: `docs/PLAN.md`
+- Phase별 세부 설계: `docs/design/phase{N}.md` (N = 1, 2, …, 7)
+  - 각 문서에는 생성 파일 목록, 클래스 시그니처, 테스트 케이스 설계, 완료 기준 체크리스트가 포함된다.
+  - 구현 시작 전 반드시 해당 phase의 설계 문서를 확인한다.
+
 ## 개발 명령어
 
 ```bash
