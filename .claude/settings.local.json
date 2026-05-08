@@ -21,7 +21,9 @@
       "Bash(Select-Object FullName)",
       "Bash(Sort-Object FullName)",
       "Bash(python -m pytest tests/test_main_controller.py::TestMainController -v --collect-only)",
-      "Bash(python -c ' *)"
+      "Bash(python -c ' *)",
+      "Bash(git checkout *)",
+      "Bash(git merge feature/phase1 --no-ff -m ' *)"
     ]
   },
   "enableAllProjectMcpServers": true,
