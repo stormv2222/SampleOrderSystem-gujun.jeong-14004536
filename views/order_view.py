@@ -31,3 +31,15 @@ class OrderView:
 
     def show_error(self, message: str) -> None:
         print(f"[오류] {message}")
+
+    def show_approve_menu(self) -> None:
+        print("[1] 승인  [2] 거절 > ", end="")
+
+    def show_shortage_confirm(self, shortage: int, actual_qty: int, total_time: int) -> None:
+        print(f"재고 부족 : 부족분 {shortage} ea 승인하시겠습니까? (실 생산량 {actual_qty} ea / {total_time} min)")
+
+    def show_approve_result(self, order_id: int, new_status: str) -> None:
+        print(f">> 주문 ID {order_id} 처리 완료 (상태: {new_status})")
+
+    def show_reject_result(self, order_id: int) -> None:
+        print(f">> 주문 ID {order_id} 거절 처리 완료")

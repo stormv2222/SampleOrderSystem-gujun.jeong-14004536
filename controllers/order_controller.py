@@ -54,3 +54,36 @@ class OrderController:
         actual_qty = math.ceil(shortage / (yield_rate * 0.9))
         total_time = avg_time * actual_qty
         return actual_qty, total_time
+
+    def _approve(self, order: dict) -> None:
+        """재고 확인 → 충분: CONFIRMED / 부족: PRODUCING + 생산 큐 등록."""
+        from models.production_queue import ProductionTask
+        sample = self._sample_repo.read_one(int(order["sample_id"]))
+        yield_rate = float(sample["yield_rate"])
+        avg_time = int(sample["avg_production_time"])
+        quantity = int(order["quantity"])
+
+        inv = self._inventory_repo.find_by_sample_id(int(order["sample_id"]))
+        stock = int(inv["quantity"]) if inv else 0
+
+        if stock >= quantity:
+            self._inventory_repo.subtract_quantity(int(order["sample_id"]), quantity)
+            self._order_repo.update(int(order["id"]), {"status": "CONFIRMED"})
+            self._view.show_approve_result(int(order["id"]), "CONFIRMED")
+        else:
+            shortage = quantity - stock
+            actual_qty, total_time = self._calc_production(shortage, yield_rate, avg_time)
+            self._view.show_shortage_confirm(shortage, actual_qty, total_time)
+            confirm = self._view.get_input("확인 (y/n) > ")
+            if confirm.lower() == "y":
+                task = ProductionTask(
+                    order_id=int(order["id"]),
+                    sample_id=int(order["sample_id"]),
+                    actual_quantity=actual_qty,
+                    total_time=total_time,
+                )
+                self._production_queue.enqueue(task)
+                self._order_repo.update(int(order["id"]), {"status": "PRODUCING"})
+                self._view.show_approve_result(int(order["id"]), "PRODUCING")
+            else:
+                self._view.show_message("승인이 취소되었습니다.")

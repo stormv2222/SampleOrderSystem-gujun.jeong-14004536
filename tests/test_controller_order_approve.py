@@ -46,3 +46,21 @@ class TestOrderControllerApprove(unittest.TestCase):
         actual_qty, total_time = ctrl._calc_production(10, 0.8, 45)
         self.assertEqual(actual_qty, 14)
         self.assertEqual(total_time, 630)
+
+    # 사이클 4 — 재고 충분 → 주문 CONFIRMED + 재고 차감
+    def test_approve_sufficient_stock_sets_confirmed(self):
+        ctrl, sample_repo, order_repo, inventory_repo, production_queue, view = _make_ctrl(["1", "1", "50"])
+        # 시료 생성 (yield_rate=0.9, avg_production_time=30)
+        sample_repo.create({"name": "A형", "avg_production_time": "30", "yield_rate": "0.9"})
+        # 재고 충분 (100 >= 50)
+        inventory_repo.create({"sample_id": "1", "quantity": "100"})
+        # RESERVED 주문 생성
+        order = order_repo.create({"sample_id": "1", "customer": "서울대", "quantity": "50"})
+        # _approve 직접 호출
+        ctrl._approve(order)
+        # 주문 상태 CONFIRMED 확인
+        updated = order_repo.read_one(int(order["id"]))
+        self.assertEqual(updated["status"], "CONFIRMED")
+        # 재고 차감 확인 (100 - 50 = 50)
+        inv = inventory_repo.find_by_sample_id(1)
+        self.assertEqual(inv["quantity"], "50")
