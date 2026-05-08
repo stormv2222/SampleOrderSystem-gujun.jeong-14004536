@@ -41,9 +41,9 @@ class TestSampleController(unittest.TestCase):
         self.assertTrue(called_with, "show_sample_list가 호출되지 않음")
         self.assertEqual(len(called_with[0]), 1)
 
-    # 검색 기준 속성 선택("2"=이름) + 검색어 입력 → 해당 속성 포함 시료만 출력
+    # 검색 기준 속성 선택("2"=이름) + 검색어 입력 → 정확히 일치하는 시료만 출력
     def test_search_by_attribute_returns_filtered_results(self):
-        ctrl, repo, view = _make_ctrl(["2", "A형"])   # "2"=이름, "A형"=검색어
+        ctrl, repo, view = _make_ctrl(["2", "A형 시료"])   # "2"=이름, "A형 시료"=검색어(정확 일치)
         repo.create({"name": "A형 시료", "avg_production_time": "30", "yield_rate": "0.9"})
         repo.create({"name": "B형 시료", "avg_production_time": "45", "yield_rate": "0.85"})
         results_passed = []

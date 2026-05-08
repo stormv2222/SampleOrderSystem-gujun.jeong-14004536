@@ -69,13 +69,29 @@ class TestSampleRepository(unittest.TestCase):
         result = self.repo.delete(9999)
         self.assertFalse(result)
 
-    # 사이클 4 — TC-8: search name 부분 일치
-    def test_search_by_name_partial_match(self):
+    # 사이클 4 — TC-8: search name 정확 일치
+    def test_search_by_name_exact_match(self):
+        """search()는 값이 정확히 일치하는 레코드만 반환한다."""
         self.repo.create({"name": "A형 시료", "avg_production_time": "30", "yield_rate": "0.9"})
         self.repo.create({"name": "B형 시료", "avg_production_time": "45", "yield_rate": "0.85"})
-        results = self.repo.search("name", "A형")
+        results = self.repo.search("name", "A형 시료")
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0]["name"], "A형 시료")
+
+    def test_search_partial_input_returns_empty(self):
+        """부분 문자열 입력 시 정확히 일치하는 레코드가 없으면 빈 리스트를 반환한다."""
+        self.repo.create({"name": "A형 시료", "avg_production_time": "30", "yield_rate": "0.9"})
+        # "A형"은 "A형 시료"의 부분 문자열이지만 정확히 일치하지 않으므로 결과 없음
+        results = self.repo.search("name", "A형")
+        self.assertEqual(results, [])
+
+    def test_search_substring_shared_by_multiple_returns_empty(self):
+        """여러 레코드에 공통으로 포함된 부분 문자열로 검색해도 정확 일치 없으면 빈 리스트."""
+        self.repo.create({"name": "A형 시료", "avg_production_time": "30", "yield_rate": "0.9"})
+        self.repo.create({"name": "B형 시료", "avg_production_time": "45", "yield_rate": "0.85"})
+        # "시료"는 두 레코드 모두에 포함된 부분 문자열
+        results = self.repo.search("name", "시료")
+        self.assertEqual(results, [])
 
     # 사이클 4 — TC-9: 파일 없어도 read_all → 빈 리스트, 예외 없음
     def test_read_all_with_no_file_returns_empty(self):

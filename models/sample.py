@@ -70,4 +70,4 @@ class SampleRepository:
         return False
 
     def search(self, key: str, value: str) -> list:
-        return [r for r in self._load() if value.lower() in r[key].lower()]
+        return [r for r in self._load() if value.lower() == r[key].lower()]
