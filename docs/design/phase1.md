@@ -33,8 +33,8 @@ semicon/
 
 ```python
 class MainView:
-    def show_menu(self, menu: dict[str, tuple[str, ...]]) -> None:
-        """메뉴 항목 출력. key 순서대로 출력하되 '0'은 마지막."""
+    def show_menu(self, menu: dict[str, str]) -> None:
+        """메뉴 항목 출력. key→label 문자열만 전달. key 순서대로 출력하되 '0'은 마지막."""
 
     def get_input(self, prompt: str = "선택 > ") -> str:
         """사용자 입력 수신. 앞뒤 공백 제거 후 반환."""
@@ -90,7 +90,7 @@ class MainController:
 **`run()` 흐름**:
 ```
 while True:
-    view.show_menu(self._menu)
+    view.show_menu({k: v[0] for k, v in self._menu.items()})
     choice = view.get_input()
 
     if choice == "0":

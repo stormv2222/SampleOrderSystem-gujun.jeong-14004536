@@ -11,7 +11,17 @@
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
       "Bash(git remote *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(python -m pytest tests/test_main_controller.py::TestMainController::test_exit_on_zero -v)",
+      "Bash(python -m pytest tests/test_main_controller.py::TestMainController::test_invalid_input_shows_error -v)",
+      "Bash(python -m pytest tests/test_main_controller.py::TestMainController::test_not_implemented_for_valid_menu -v)",
+      "Bash(python -m pytest tests/test_main_controller.py::TestMainController::test_show_menu_contains_all_items -v)",
+      "Bash(python -m pytest tests/test_main_controller.py -v)",
+      "Bash(Get-ChildItem -Recurse -Include \"*.py\")",
+      "Bash(Select-Object FullName)",
+      "Bash(Sort-Object FullName)",
+      "Bash(python -m pytest tests/test_main_controller.py::TestMainController -v --collect-only)",
+      "Bash(python -c ' *)"
     ]
   },
   "enableAllProjectMcpServers": true,
