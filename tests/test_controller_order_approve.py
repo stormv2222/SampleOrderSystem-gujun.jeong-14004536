@@ -64,3 +64,23 @@ class TestOrderControllerApprove(unittest.TestCase):
         # 재고 차감 확인 (100 - 50 = 50)
         inv = inventory_repo.find_by_sample_id(1)
         self.assertEqual(inv["quantity"], "50")
+
+    # 사이클 5 — 재고 부족 + y → PRODUCING + 생산 큐 등록
+    def test_approve_insufficient_stock_y_sets_producing(self):
+        # inputs: y (재고 부족 확인)
+        ctrl, sample_repo, order_repo, inventory_repo, production_queue, view = _make_ctrl(["y"])
+        sample_repo.create({"name": "A형", "avg_production_time": "30", "yield_rate": "0.9"})
+        # 재고 부족 (10 < 50)
+        inventory_repo.create({"sample_id": "1", "quantity": "10"})
+        order = order_repo.create({"sample_id": "1", "customer": "서울대", "quantity": "50"})
+        # show_shortage_confirm, show_approve_result 람다 교체
+        view.show_shortage_confirm = lambda shortage, actual_qty, total_time: None
+        view.show_approve_result = lambda order_id, status: None
+        ctrl._approve(order)
+        # 주문 상태 PRODUCING 확인
+        updated = order_repo.read_one(int(order["id"]))
+        self.assertEqual(updated["status"], "PRODUCING")
+        # 생산 큐에 태스크 1건 등록 확인
+        self.assertEqual(production_queue.size(), 1)
+        task = production_queue.peek()
+        self.assertEqual(task.order_id, int(order["id"]))
