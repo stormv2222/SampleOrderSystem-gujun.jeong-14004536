@@ -62,3 +62,17 @@ class TestMainController:
         ctrl = MainController(view, sample_ctrl=FakeSampleCtrl())
         ctrl.run()
         assert called, "sample_ctrl.run()이 호출되지 않음"
+
+    # 사이클 7 — order_ctrl 주입 시 "2" 입력이 order_ctrl.run_reserve() 호출
+    def test_order_ctrl_is_called_on_menu_2(self):
+        view = MainView()
+        _set_inputs(view, "2", "0")
+        called = []
+
+        class FakeOrderCtrl:
+            def run_reserve(self):
+                called.append(True)
+
+        ctrl = MainController(view, order_ctrl=FakeOrderCtrl())
+        ctrl.run()
+        assert called, "order_ctrl.run_reserve()가 호출되지 않음"

@@ -61,13 +61,13 @@
 
 ---
 
-## 사이클 5 — OrderController.run_reserve() 잘못된 시료 ID
+## 사이클 5 — OrderController.run_reserve() 잘못된 시료 ID  ← 현재 사이클
 
 ### 검증할 동작
 존재하지 않는 시료 ID 입력 시 에러 메시지를 보여주고 주문을 생성하지 않는다.
 
 ### 테스트 시나리오
-- Given 존재하지 않는 sample_id="999", When `run_reserve()` 호출, Then `view.show_error` 호출됨, 주문 미생성
+- Given 빈 sample_repo (시료 없음), When `run_reserve()` 호출(sample_id="999"), Then `view.show_error` 호출됨, order_repo.read_all() == []
 
 ### 예상 실패 이유
 사이클 4 후 invalid 분기 미구현 (또는 show_error 미호출)

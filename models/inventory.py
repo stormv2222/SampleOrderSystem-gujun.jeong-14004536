@@ -81,10 +81,10 @@ class InventoryRepository:
         new_qty = int(record["quantity"]) + amount
         return self.update(int(record["id"]), {"quantity": str(new_qty)})
 
-    def subtract_quantity(self, sample_id: int, amount: int) -> Optional[dict]:
+    def subtract_quantity(self, sample_id: int, amount: int) -> dict:
         record = self.find_by_sample_id(sample_id)
         if record is None:
-            return None
+            raise ValueError(f"재고 레코드 없음: sample_id={sample_id}")
         current = int(record["quantity"])
         if current < amount:
             raise ValueError(f"재고 부족: 현재 {current}, 요청 {amount}")
