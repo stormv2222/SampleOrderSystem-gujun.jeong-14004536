@@ -112,7 +112,7 @@ class OrderController:
             return
 
         self._view.show_approve_menu()
-        action = self._view.get_input("[1] 승인  [2] 거절 > ")
+        action = self._view.get_input("")
         if action == "1":
             self._approve(order)
         elif action == "2":

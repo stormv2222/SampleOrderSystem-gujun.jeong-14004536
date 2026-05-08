@@ -130,6 +130,31 @@ class TestOrderControllerApprove(unittest.TestCase):
         ctrl.run_approve()
         self.assertTrue(errors, "show_error()가 호출되지 않음")
 
+    # 버그 수정 — show_approve_menu 이후 get_input에는 빈 프롬프트가 전달돼야 함
+    def test_approve_action_get_input_called_with_empty_prompt(self):
+        """show_approve_menu()가 이미 프롬프트를 출력하므로
+        승인/거절 선택 get_input은 빈 문자열 프롬프트로 호출돼야 한다."""
+        ctrl, sample_repo, order_repo, inventory_repo, _, view = _make_ctrl(["1", "1"])
+        sample_repo.create({"name": "A형", "avg_production_time": "30", "yield_rate": "0.9"})
+        inventory_repo.create({"sample_id": "1", "quantity": "100"})
+        order_repo.create({"sample_id": "1", "customer": "연구소", "quantity": "10"})
+
+        prompts_received = []
+        inputs_iter = iter(["1", "1"])
+        def capturing_get_input(prompt=""):
+            prompts_received.append(prompt)
+            return next(inputs_iter)
+        view.get_input = capturing_get_input
+        view.show_order_list = lambda orders, title="": None
+        view.show_approve_result = lambda oid, st: None
+
+        ctrl.run_approve()
+
+        # 두 번째 get_input 호출(승인/거절 선택)의 프롬프트가 빈 문자열이어야 함
+        action_prompt = prompts_received[1]  # 0: 주문 ID, 1: 승인/거절
+        self.assertEqual(action_prompt, "",
+            f"승인/거절 get_input에 '{action_prompt}'가 전달됨 — 빈 문자열이어야 함")
+
     # 버그 수정 — 주문 ID 입력 칸에서 엔터만 누르면 오류 메시지 출력 (crash 없음)
     def test_approve_empty_order_id_input_shows_error(self):
         """주문 ID 입력 시 빈 값(엔터)을 입력하면 ValueError 대신 오류 메시지를 출력한다."""
