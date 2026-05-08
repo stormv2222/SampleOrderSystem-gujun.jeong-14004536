@@ -32,3 +32,34 @@ def test_fielddef_is_dataclass():
     f = FieldDef(name='quantity', field_type='int')
     assert f.name == 'quantity'
     assert f.field_type == 'int'
+
+
+# ───────────────────────────────────────────────
+# 사이클 2: generate_one() 반환 dict 키 검증 (TC-1)
+# ───────────────────────────────────────────────
+
+from generator.engine import DummyGenerator
+
+
+@pytest.fixture
+def sample_gen():
+    return DummyGenerator(DEFAULT_SCHEMAS['sample'])
+
+
+@pytest.fixture
+def order_gen():
+    return DummyGenerator(DEFAULT_SCHEMAS['order'])
+
+
+def test_generate_one_keys_match_schema_sample(sample_gen):
+    """generate_one() 반환 dict의 키 집합이 sample 스키마 필드명과 일치한다."""
+    result = sample_gen.generate_one()
+    expected_keys = {f.name for f in DEFAULT_SCHEMAS['sample']}
+    assert set(result.keys()) == expected_keys
+
+
+def test_generate_one_keys_match_schema_order(order_gen):
+    """generate_one() 반환 dict의 키 집합이 order 스키마 필드명과 일치한다."""
+    result = order_gen.generate_one()
+    expected_keys = {f.name for f in DEFAULT_SCHEMAS['order']}
+    assert set(result.keys()) == expected_keys
