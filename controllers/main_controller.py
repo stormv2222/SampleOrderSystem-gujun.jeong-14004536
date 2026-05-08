@@ -5,6 +5,8 @@ from views.main_view import MainView
 if TYPE_CHECKING:
     from controllers.sample_controller import SampleController
     from controllers.order_controller import OrderController
+    from controllers.production_controller import ProductionController
+    from controllers.release_controller import ReleaseController
 
 
 class MainController:
@@ -13,6 +15,8 @@ class MainController:
         view: MainView,
         sample_ctrl: SampleController | None = None,
         order_ctrl: OrderController | None = None,
+        production_ctrl: ProductionController | None = None,
+        release_ctrl: ReleaseController | None = None,
     ) -> None:
         self._view = view
         self._menu: dict[str, tuple[str, Callable | None]] = {
@@ -30,6 +34,10 @@ class MainController:
             self._menu["2"] = ("주문 접수", order_ctrl.run_reserve)
             if hasattr(order_ctrl, "run_approve"):
                 self._menu["3"] = ("주문 승인/거절", order_ctrl.run_approve)
+        if release_ctrl is not None:
+            self._menu["5"] = ("출고 처리", release_ctrl.run)
+        if production_ctrl is not None:
+            self._menu["6"] = ("생산 라인", production_ctrl.run)
 
     def run(self) -> None:
         while True:
