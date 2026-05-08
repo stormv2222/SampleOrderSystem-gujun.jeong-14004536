@@ -16,3 +16,6 @@ class MainView:
 
     def show_not_implemented(self) -> None:
         print("[준비 중] 이 기능은 아직 구현되지 않았습니다.")
+
+    def show_message(self, message: str) -> None:
+        print(f">> {message}")

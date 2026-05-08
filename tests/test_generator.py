@@ -143,3 +143,32 @@ def test_generate_batch_zero_returns_empty_list(order_gen):
     """generate_batch(0)은 빈 리스트를 반환한다 (TC-6)."""
     result = order_gen.generate_batch(0)
     assert result == []
+
+
+# ───────────────────────────────────────────────
+# 사이클 7: DummyController (auto_generate_and_insert + run)
+# ───────────────────────────────────────────────
+
+from controllers.dummy_controller import DummyController
+from models.sample import SampleRepository
+from views.main_view import MainView
+
+
+def test_auto_generate_inserts_correct_count(tmp_path):
+    """auto_generate_and_insert('sample', 3) 호출 시 Repository에 3건이 저장된다."""
+    repo = SampleRepository(str(tmp_path / "sample.json"))
+    view = MainView()
+    ctrl = DummyController(repos={"sample": repo}, view=view)
+    ctrl.auto_generate_and_insert("sample", 3)
+    assert len(repo.read_all()) == 3
+
+
+def test_dummy_controller_run_inserts_via_input(tmp_path):
+    """run() 실행 시 스키마 선택·건수 입력에 따라 Repository에 데이터가 삽입된다."""
+    repo = SampleRepository(str(tmp_path / "sample.json"))
+    view = MainView()
+    inputs = iter(["sample", "5"])
+    view.get_input = lambda prompt="": next(inputs)
+    ctrl = DummyController(repos={"sample": repo}, view=view)
+    ctrl.run()
+    assert len(repo.read_all()) == 5
