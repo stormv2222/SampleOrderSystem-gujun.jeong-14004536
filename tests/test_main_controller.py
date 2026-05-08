@@ -120,3 +120,17 @@ class TestMainController:
         ctrl = MainController(view, release_ctrl=FakeReleaseCtrl())
         ctrl.run()
         assert called, "release_ctrl.run()이 호출되지 않음"
+
+    # Bundle D — monitoring_ctrl 주입 시 "4" 입력이 monitoring_ctrl.run() 호출
+    def test_monitoring_ctrl_run_is_called_on_menu_4(self):
+        view = MainView()
+        _set_inputs(view, "4", "0")
+        called = []
+
+        class FakeMonitoringCtrl:
+            def run(self):
+                called.append(True)
+
+        ctrl = MainController(view, monitoring_ctrl=FakeMonitoringCtrl())
+        ctrl.run()
+        assert called, "monitoring_ctrl.run()이 호출되지 않음"

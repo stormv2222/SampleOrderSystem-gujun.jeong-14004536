@@ -7,6 +7,7 @@ if TYPE_CHECKING:
     from controllers.order_controller import OrderController
     from controllers.production_controller import ProductionController
     from controllers.release_controller import ReleaseController
+    from controllers.monitoring_controller import MonitoringController
 
 
 class MainController:
@@ -17,6 +18,7 @@ class MainController:
         order_ctrl: OrderController | None = None,
         production_ctrl: ProductionController | None = None,
         release_ctrl: ReleaseController | None = None,
+        monitoring_ctrl: MonitoringController | None = None,
     ) -> None:
         self._view = view
         self._menu: dict[str, tuple[str, Callable | None]] = {
@@ -34,6 +36,8 @@ class MainController:
             self._menu["2"] = ("주문 접수", order_ctrl.run_reserve)
             if hasattr(order_ctrl, "run_approve"):
                 self._menu["3"] = ("주문 승인/거절", order_ctrl.run_approve)
+        if monitoring_ctrl is not None:
+            self._menu["4"] = ("모니터링", monitoring_ctrl.run)
         if release_ctrl is not None:
             self._menu["5"] = ("출고 처리", release_ctrl.run)
         if production_ctrl is not None:
