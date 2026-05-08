@@ -84,3 +84,19 @@ class TestOrderControllerApprove(unittest.TestCase):
         self.assertEqual(production_queue.size(), 1)
         task = production_queue.peek()
         self.assertEqual(task.order_id, int(order["id"]))
+
+    # 사이클 6 — 재고 부족 + n → 상태 변경 없음, 생산 큐 비어 있음
+    def test_approve_insufficient_stock_n_no_change(self):
+        # inputs: n (취소)
+        ctrl, sample_repo, order_repo, inventory_repo, production_queue, view = _make_ctrl(["n"])
+        sample_repo.create({"name": "A형", "avg_production_time": "30", "yield_rate": "0.9"})
+        inventory_repo.create({"sample_id": "1", "quantity": "10"})
+        order = order_repo.create({"sample_id": "1", "customer": "서울대", "quantity": "50"})
+        view.show_shortage_confirm = lambda shortage, actual_qty, total_time: None
+        view.show_message = lambda msg: None
+        ctrl._approve(order)
+        # 주문 상태 여전히 RESERVED
+        updated = order_repo.read_one(int(order["id"]))
+        self.assertEqual(updated["status"], "RESERVED")
+        # 생산 큐 비어 있음
+        self.assertTrue(production_queue.is_empty())
