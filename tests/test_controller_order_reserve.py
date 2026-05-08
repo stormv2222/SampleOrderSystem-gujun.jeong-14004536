@@ -49,3 +49,14 @@ class TestOrderControllerReserve(unittest.TestCase):
         ctrl.run_reserve()
         self.assertTrue(errors, "show_error()가 호출되지 않음")
         self.assertEqual(order_repo.read_all(), [])
+
+    # 사이클 6 — 접수 완료 메시지에 현재 재고 수량 포함
+    def test_reserve_shows_current_inventory(self):
+        ctrl, sample_repo, order_repo, inventory_repo, view = _make_ctrl(["1", "서울대 연구소", "50"])
+        sample_repo.create({"name": "A형 시료", "avg_production_time": "30", "yield_rate": "0.9"})
+        inventory_repo.create({"sample_id": "1", "quantity": "200"})
+        messages = []
+        view.show_message = lambda msg: messages.append(msg)
+        ctrl.run_reserve()
+        self.assertTrue(messages, "show_message()가 호출되지 않음")
+        self.assertIn("200 ea", messages[0])
