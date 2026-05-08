@@ -101,7 +101,11 @@ class OrderController:
         reserved = self._order_repo.filter_by_status("RESERVED")
         self._view.show_order_list(reserved, title="접수 주문 목록")
 
-        order_id = int(self._view.get_input("처리할 주문 ID: "))
+        raw_id = self._view.get_input("처리할 주문 ID: ")
+        if not raw_id.isdigit():
+            self._view.show_error("주문 ID는 숫자로 입력하세요.")
+            return
+        order_id = int(raw_id)
         order = self._order_repo.read_one(order_id)
         if order is None or order["status"] != "RESERVED":
             self._view.show_error("유효하지 않은 주문 ID입니다.")

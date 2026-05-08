@@ -130,6 +130,16 @@ class TestOrderControllerApprove(unittest.TestCase):
         ctrl.run_approve()
         self.assertTrue(errors, "show_error()가 호출되지 않음")
 
+    # 버그 수정 — 주문 ID 입력 칸에서 엔터만 누르면 오류 메시지 출력 (crash 없음)
+    def test_approve_empty_order_id_input_shows_error(self):
+        """주문 ID 입력 시 빈 값(엔터)을 입력하면 ValueError 대신 오류 메시지를 출력한다."""
+        ctrl, sample_repo, order_repo, _, _, view = _make_ctrl([""])
+        errors = []
+        view.show_error = lambda msg: errors.append(msg)
+        view.show_order_list = lambda orders, title="": None
+        ctrl.run_approve()
+        self.assertTrue(errors, "빈 입력 시 show_error()가 호출되지 않음")
+
     # 버그 수정 — 존재하지 않는 sample_id를 가진 주문 승인 시 오류 메시지 출력 (crash 없음)
     def test_approve_order_with_nonexistent_sample_shows_error(self):
         """주문의 sample_id에 해당하는 시료가 없을 때 TypeError 대신 오류 메시지를 출력한다."""
