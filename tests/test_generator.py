@@ -63,3 +63,23 @@ def test_generate_one_keys_match_schema_order(order_gen):
     result = order_gen.generate_one()
     expected_keys = {f.name for f in DEFAULT_SCHEMAS['order']}
     assert set(result.keys()) == expected_keys
+
+
+# ───────────────────────────────────────────────
+# 사이클 3: 모든 값이 str 타입 (TC-2)
+# ───────────────────────────────────────────────
+
+def test_all_values_are_str_sample(sample_gen):
+    """sample generate_one() 반환값이 모두 str 타입이다 (20회 반복)."""
+    for _ in range(20):
+        result = sample_gen.generate_one()
+        assert all(isinstance(v, str) for v in result.values()), \
+            f"Non-str value found: {result}"
+
+
+def test_all_values_are_str_order(order_gen):
+    """order generate_one() 반환값이 모두 str 타입이다 (20회 반복)."""
+    for _ in range(20):
+        result = order_gen.generate_one()
+        assert all(isinstance(v, str) for v in result.values()), \
+            f"Non-str value found: {result}"
