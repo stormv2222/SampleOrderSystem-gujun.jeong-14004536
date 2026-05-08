@@ -83,3 +83,34 @@ def test_all_values_are_str_order(order_gen):
         result = order_gen.generate_one()
         assert all(isinstance(v, str) for v in result.values()), \
             f"Non-str value found: {result}"
+
+
+# ───────────────────────────────────────────────
+# 사이클 4: int 타입 필드 범위 검증 (TC-3, TC-7)
+# ───────────────────────────────────────────────
+
+def test_quantity_is_digit_and_in_range(order_gen):
+    """order quantity 필드가 isdigit()이고 1~100 범위다 (20회 반복, TC-3)."""
+    for _ in range(20):
+        result = order_gen.generate_one()
+        qty = result['quantity']
+        assert qty.isdigit(), f"quantity not digit: {qty}"
+        assert 1 <= int(qty) <= 100, f"quantity out of range: {qty}"
+
+
+def test_yield_rate_in_range(sample_gen):
+    """sample yield_rate 필드가 1~100 범위의 숫자 문자열이다 (20회 반복, TC-7)."""
+    for _ in range(20):
+        result = sample_gen.generate_one()
+        yr = result['yield_rate']
+        assert yr.isdigit(), f"yield_rate not digit: {yr}"
+        assert 1 <= int(yr) <= 100, f"yield_rate out of range: {yr}"
+
+
+def test_avg_production_time_in_range(sample_gen):
+    """sample avg_production_time 필드가 1~100 범위의 숫자 문자열이다 (20회 반복, TC-3)."""
+    for _ in range(20):
+        result = sample_gen.generate_one()
+        apt = result['avg_production_time']
+        assert apt.isdigit(), f"avg_production_time not digit: {apt}"
+        assert 1 <= int(apt) <= 100, f"avg_production_time out of range: {apt}"
