@@ -92,3 +92,27 @@ class OrderController:
         """주문 상태를 REJECTED로 변경."""
         self._order_repo.update(int(order["id"]), {"status": "REJECTED"})
         self._view.show_reject_result(int(order["id"]))
+
+    def run_approve(self) -> None:
+        """RESERVED 주문 목록 표시 → 주문 ID 선택 → 승인/거절 처리."""
+        reserved = self._order_repo.filter_by_status("RESERVED")
+        self._view.show_order_list(reserved, title="접수 주문 목록")
+
+        order_id = int(self._view.get_input("처리할 주문 ID: "))
+        order = self._order_repo.read_one(order_id)
+        if order is None or order["status"] != "RESERVED":
+            self._view.show_error("유효하지 않은 주문 ID입니다.")
+            return
+
+        self._view.show_approve_menu()
+        action = self._view.get_input("[1] 승인  [2] 거절 > ")
+        if action == "1":
+            self._approve(order)
+        elif action == "2":
+            self._reject(order)
+        else:
+            self._view.show_error("올바른 번호를 입력하세요.")
+
+    def run_reject(self) -> None:
+        """run_approve와 동일 진입점."""
+        self.run_approve()

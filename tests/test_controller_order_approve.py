@@ -110,3 +110,22 @@ class TestOrderControllerApprove(unittest.TestCase):
         ctrl._reject(order)
         updated = order_repo.read_one(int(order["id"]))
         self.assertEqual(updated["status"], "REJECTED")
+
+    # 사이클 8 — 존재하지 않는 주문 ID → show_error 호출
+    def test_approve_invalid_order_id_shows_error(self):
+        # inputs: order_id=999 (없는 주문), action=1 (승인 시도)
+        ctrl, sample_repo, order_repo, _, _, view = _make_ctrl(["999", "1"])
+        errors = []
+        view.show_error = lambda msg: errors.append(msg)
+        ctrl.run_approve()
+        self.assertTrue(errors, "show_error()가 호출되지 않음")
+
+    # 사이클 8 — CONFIRMED 상태 주문 → show_error 호출
+    def test_approve_non_reserved_order_shows_error(self):
+        ctrl, sample_repo, order_repo, _, _, view = _make_ctrl(["1", "1"])
+        sample_repo.create({"name": "A형", "avg_production_time": "30", "yield_rate": "0.9"})
+        order = order_repo.create({"sample_id": "1", "customer": "서울대", "quantity": "50", "status": "CONFIRMED"})
+        errors = []
+        view.show_error = lambda msg: errors.append(msg)
+        ctrl.run_approve()
+        self.assertTrue(errors, "show_error()가 호출되지 않음")
