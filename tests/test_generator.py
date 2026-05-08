@@ -114,3 +114,32 @@ def test_avg_production_time_in_range(sample_gen):
         apt = result['avg_production_time']
         assert apt.isdigit(), f"avg_production_time not digit: {apt}"
         assert 1 <= int(apt) <= 100, f"avg_production_time out of range: {apt}"
+
+
+# ───────────────────────────────────────────────
+# 사이클 5: name 타입 필드 비어 있지 않음 (TC-4)
+# ───────────────────────────────────────────────
+
+def test_customer_name_not_empty(order_gen):
+    """order customer 필드가 비어 있지 않은 문자열이다 (20회 반복, TC-4)."""
+    for _ in range(20):
+        result = order_gen.generate_one()
+        customer = result['customer']
+        assert isinstance(customer, str), f"customer is not str: {customer!r}"
+        assert customer.strip() != '', f"customer is empty or whitespace: {customer!r}"
+
+
+# ───────────────────────────────────────────────
+# 사이클 6: generate_batch(n) / generate_batch(0) (TC-5, TC-6)
+# ───────────────────────────────────────────────
+
+def test_generate_batch_returns_exact_count(order_gen):
+    """generate_batch(5)는 정확히 5건을 반환한다 (TC-5)."""
+    result = order_gen.generate_batch(5)
+    assert len(result) == 5
+
+
+def test_generate_batch_zero_returns_empty_list(order_gen):
+    """generate_batch(0)은 빈 리스트를 반환한다 (TC-6)."""
+    result = order_gen.generate_batch(0)
+    assert result == []
